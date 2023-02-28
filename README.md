@@ -16,4 +16,5 @@ docker-compose up --build.
 Можно создавать/изменять/удалять задачи для выполнения.
 Для задач можно указать название и описание.
 
-![image](https://user-images.githubusercontent.com/12966963/221934393-2d0ba6d4-b00d-4b2a-b7a4-6910efddf0dc.png)
+
+![image](https://user-images.githubusercontent.com/12966963/221984588-a4d9e51c-0542-41c7-8f3c-38bf8b7eb8f4.png)
