@@ -4,6 +4,7 @@ import com.hh.TaskApp.converter.TaskConverter;
 import com.hh.TaskApp.dao.TaskDao;
 import com.hh.TaskApp.dto.TaskInfo;
 import com.hh.TaskApp.model.Task;
+import com.hh.TaskApp.model.TaskStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,8 +25,7 @@ public class TaskService {
 
     public TaskInfo getTaskById(UUID taskId) {
         Task task = taskDao.findTaskById(taskId);
-        return new TaskInfo(task.getId(), task.getTitle(), task.getNotes(), task.getCreated(), task.getUpdated(), task.getParent(),
-                task.getStatus(), task.isDeleted(), task.getDue(), task.getCompleted(), task.isHidden());
+        return taskConverter.convertToDto(task);
     }
 
     public List<TaskInfo> getTasks() {
@@ -43,6 +43,7 @@ public class TaskService {
         task.setCreated(LocalDateTime.now());
         task.setTitle(taskInfo.getTitle());
         task.setDeleted(false);
+        task.setStatus(TaskStatus.IN_PROGRESS);
         task.setNotes(taskInfo.getNotes());
 
         return taskDao.save(task);
@@ -53,6 +54,7 @@ public class TaskService {
         Task task = taskDao.findTaskById(taskInfo.getId());
         task.setTitle(taskInfo.getTitle());
         task.setDeleted(taskInfo.isDeleted());
+        task.setStatus(TaskStatus.valueByName(taskInfo.getStatus()));
         task.setNotes(taskInfo.getNotes());
         return taskDao.save(task);
     }

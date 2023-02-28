@@ -18,7 +18,7 @@ public class Task {
     LocalDateTime created;
 
     String parent;
-    String status;
+    TaskStatus status;
     boolean deleted;
     String due;
     String completed;
@@ -59,11 +59,12 @@ public class Task {
         this.updated = updated;
     }
 
-    public String getStatus() {
+    @Enumerated(EnumType.ORDINAL)
+    public TaskStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TaskStatus status) {
         this.status = status;
     }
 

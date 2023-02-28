@@ -7,7 +7,7 @@ CREATE TABLE tasks (
     created timestamp not null,
     updated varchar,
     parent varchar,
-    status varchar,
+    status integer,
     deleted boolean,
     due varchar,
     completed varchar,
