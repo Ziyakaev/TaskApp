@@ -1,0 +1,42 @@
+version: '2.4'
+
+services:
+    db:
+      build:
+        context: ./db
+        dockerfile: Dockerfile
+      restart: always
+      container_name: postgres
+      environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=admin
+      ports:
+        - "5432:5432"
+      volumes:
+        - db-data:/var/lib/postgresql/data:delegated
+    task-app:
+      mem_limit: 1000m
+      container_name: task-app
+      environment:
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/testdb
+        - SPRING_DATASOURCE_USERNAME=postgres
+        - SPRING_DATASOURCE_PASSWORD=admin
+      build:
+        context: .
+        dockerfile: DockerFile
+      ports:
+        - "8803:8803" # debug
+        - "8889:8080"
+      depends_on:
+        - db
+    front-app:
+      build:
+        context: ./frontend
+        dockerfile: DockerFile
+      ports:
+        - "3000:3000"
+      links:
+        - task-app
+
+volumes:
+  db-data:
