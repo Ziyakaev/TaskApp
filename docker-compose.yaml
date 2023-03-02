@@ -11,7 +11,7 @@ services:
       ports:
         - "5432:5432"
       volumes:
-        - db-data:/var/lib/postgresql/data:delegated
+        - data:/var/lib/postgresql/data:delegated
     task-app:
       mem_limit: 1000m
       container_name: task-app
@@ -33,4 +33,4 @@ services:
         - task-app
 
 volumes:
-  db-data:
+  data:
