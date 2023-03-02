@@ -2,9 +2,7 @@ version: '2.4'
 
 services:
     db:
-      build:
-        context: ./db
-        dockerfile: Dockerfile
+      image: "ziyakaev/hh_task_app"
       restart: always
       container_name: postgres
       environment:
@@ -21,18 +19,14 @@ services:
         - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/testdb
         - SPRING_DATASOURCE_USERNAME=postgres
         - SPRING_DATASOURCE_PASSWORD=admin
-      build:
-        context: .
-        dockerfile: DockerFile
+      image: "ziyakaev/hh_task_app_back"
       ports:
         - "8803:8803" # debug
         - "8889:8080"
       depends_on:
         - db
     front-app:
-      build:
-        context: ./frontend
-        dockerfile: DockerFile
+      image: "ziyakaev/front-app"
       ports:
         - "3000:3000"
       links:
