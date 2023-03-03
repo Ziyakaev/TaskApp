@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -23,9 +24,12 @@ public class TaskService {
         this.taskConverter = taskConverter;
     }
 
-    public TaskInfo getTaskById(UUID taskId) {
-        Task task = taskDao.findTaskById(taskId);
-        return taskConverter.convertToDto(task);
+    public Optional<TaskInfo> getTaskById(UUID taskId) {
+        Task task = taskDao.findTaskByIdAndDeletedIsFalse(taskId);
+        if (task == null) {
+            return Optional.empty();
+        }
+        return Optional.of(taskConverter.convertToDto(task));
     }
 
     public List<TaskInfo> getTasks() {
@@ -35,12 +39,20 @@ public class TaskService {
                 .collect(Collectors.toList());
     }
 
-    public Task createTask(TaskInfo taskInfo) throws Exception {
+    public List<TaskInfo> getAllActiveTasks() {
+        List<Task> tasks = taskDao.findAllByDeletedIsFalse();
+        return tasks.stream()
+                .map(taskConverter::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    public Task createTask(TaskInfo taskInfo) {
         if (taskInfo.getId() != null) {
-            throw new Exception("task already exist");
+            throw new IllegalArgumentException("task already exist with id" + taskInfo.getId());
         }
         Task task = new Task();
         task.setCreated(LocalDateTime.now());
+        task.setUpdated(LocalDateTime.now());
         task.setTitle(taskInfo.getTitle());
         task.setDeleted(false);
         task.setStatus(TaskStatus.IN_PROGRESS);
@@ -51,15 +63,24 @@ public class TaskService {
 
 
     public Task updateTask(TaskInfo taskInfo) {
-        Task task = taskDao.findTaskById(taskInfo.getId());
+        Task task = taskDao.findTaskByIdAndDeletedIsFalse(taskInfo.getId());
         task.setTitle(taskInfo.getTitle());
         task.setDeleted(taskInfo.isDeleted());
+        task.setUpdated(LocalDateTime.now());
         task.setStatus(TaskStatus.valueByName(taskInfo.getStatus()));
         task.setNotes(taskInfo.getNotes());
         return taskDao.save(task);
     }
 
-    public void deleteTask(UUID taskId) {
-        taskDao.deleteById(taskId);
+    public Optional<UUID> deleteTask(UUID taskId) {
+        Task task = taskDao.findTaskByIdAndDeletedIsFalse(taskId);
+        if (task != null) {
+            task.setDeleted(true);
+            task.setUpdated(LocalDateTime.now());
+            Task savedTask = taskDao.save(task);
+            return Optional.of(savedTask.getId());
+        }
+        return Optional.empty();
+
     }
 }

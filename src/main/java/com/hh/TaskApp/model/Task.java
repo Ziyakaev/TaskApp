@@ -14,7 +14,7 @@ public class Task {
     UUID id;
     String title;
     String notes;
-    String updated;
+    LocalDateTime updated;
     LocalDateTime created;
 
     String parent;
@@ -51,11 +51,11 @@ public class Task {
         this.notes = description;
     }
 
-    public String getUpdated() {
+    public LocalDateTime getUpdated() {
         return updated;
     }
 
-    public void setUpdated(String updated) {
+    public void setUpdated(LocalDateTime updated) {
         this.updated = updated;
     }
 

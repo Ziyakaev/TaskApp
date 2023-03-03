@@ -5,7 +5,7 @@ CREATE TABLE tasks (
     title varchar,
     notes varchar,
     created timestamp not null,
-    updated varchar,
+    updated timestamp not null,
     parent varchar,
     status integer,
     deleted boolean,
