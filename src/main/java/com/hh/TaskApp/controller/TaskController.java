@@ -1,16 +1,19 @@
 package com.hh.TaskApp.controller;
 
 import com.hh.TaskApp.dto.TaskInfo;
-import com.hh.TaskApp.model.Task;
 import com.hh.TaskApp.service.TaskService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -18,63 +21,35 @@ import java.util.UUID;
 public class TaskController {
 
     private final TaskService taskService;
-    private static final Logger log = LoggerFactory.getLogger(TaskController.class);
 
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
 
     @GetMapping(value = "{taskId}")
-    public ResponseEntity<?> getTask(@PathVariable("taskId") UUID taskId) {
-        Optional<TaskInfo> taskInfo = taskService.getTaskById(taskId);
-        if (taskInfo.isPresent()) {
-            return ResponseEntity.ok(taskInfo);
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    public TaskInfo getTask(@PathVariable("taskId") UUID taskId) {
+        return taskService.getTaskById(taskId);
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllActiveTasks() {
-        List<TaskInfo> taskInfo = taskService.getAllActiveTasks();
-        return ResponseEntity.ok(taskInfo);
+    public List<TaskInfo> getAllActiveNotCompletedTasks() {
+        return taskService.getAllActiveNotCompletedTasks();
     }
 
 
     @PostMapping()
-    public ResponseEntity<?> createTask(@RequestBody TaskInfo taskInfo) {
-        try {
-            Task task = taskService.createTask(taskInfo);
-            return ResponseEntity.ok(task.getId());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-
+    public TaskInfo createTask(@RequestBody TaskInfo taskInfo) {
+        return taskService.createTask(taskInfo);
     }
 
     @PutMapping(value = "{taskId}")
-    public ResponseEntity<?> updateTask(@PathVariable UUID taskId, @RequestBody TaskInfo taskInfo) {
-        try {
-            Task task = taskService.updateTask(taskInfo);
-            return ResponseEntity.ok(task.getId());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public TaskInfo updateTask(@PathVariable UUID taskId, @RequestBody TaskInfo taskInfo) {
+        return taskService.updateTask(taskInfo);
     }
 
     @DeleteMapping("/{taskId}")
-    public ResponseEntity<?> deleteTask(@PathVariable UUID taskId) {
-        try {
-            Optional<UUID> uuidDeletedTask = taskService.deleteTask(taskId);
-            return uuidDeletedTask.isPresent()
-                    ? ResponseEntity.accepted().build()
-                    : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        } catch (Exception e) {
-            log.warn("can not delete task with id {}", taskId, e);
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    public UUID deleteTask(@PathVariable UUID taskId) {
+        return taskService.deleteTask(taskId);
     }
-
-
-
-
 }

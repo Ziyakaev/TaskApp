@@ -1,6 +1,7 @@
 package com.hh.TaskApp.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.hh.TaskApp.model.TaskStatus;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -15,14 +16,14 @@ public class TaskInfo {
     String updated;
 
     String parent;
-    String status;
+    TaskStatus status;
     boolean deleted;
     String due;
-    String completed;
+    boolean completed;
     boolean hidden;
 
     public TaskInfo(UUID id, String title, String notes, LocalDateTime created, String updated, String parent,
-                    String status, boolean deleted, String due, String completed, boolean hidden) {
+                    TaskStatus status, boolean deleted, String due, boolean completed, boolean hidden) {
         this.id = id;
         this.title = title;
         this.notes = notes;
@@ -79,11 +80,11 @@ public class TaskInfo {
         this.parent = parent;
     }
 
-    public String getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TaskStatus status) {
         this.status = status;
     }
 
@@ -103,8 +104,12 @@ public class TaskInfo {
         this.due = due;
     }
 
-    public String getCompleted() {
+    public boolean isCompleted() {
         return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 
     public LocalDateTime getCreated() {
@@ -113,10 +118,6 @@ public class TaskInfo {
 
     public void setCreated(LocalDateTime created) {
         this.created = created;
-    }
-
-    public void setCompleted(String completed) {
-        this.completed = completed;
     }
 
     public boolean isHidden() {

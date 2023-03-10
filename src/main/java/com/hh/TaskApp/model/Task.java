@@ -1,6 +1,11 @@
 package com.hh.TaskApp.model;
-
-import jakarta.persistence.*;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,8 +26,18 @@ public class Task {
     TaskStatus status;
     boolean deleted;
     String due;
-    String completed;
+    boolean completed;
     boolean hidden;
+
+    public Task(String title, String notes) {
+        this.title = title;
+        this.notes = notes;
+        this.created = LocalDateTime.now();
+        this.updated = LocalDateTime.now();
+        this.deleted = false;
+        this.completed = false;
+        this.status = TaskStatus.IN_PROGRESS;
+    }
 
     public Task() {
     }
@@ -59,7 +74,7 @@ public class Task {
         this.updated = updated;
     }
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(value = EnumType.ORDINAL)
     public TaskStatus getStatus() {
         return status;
     }
@@ -84,11 +99,11 @@ public class Task {
         this.due = due;
     }
 
-    public String getCompleted() {
+    public boolean isCompleted() {
         return completed;
     }
 
-    public void setCompleted(String completed) {
+    public void setCompleted(boolean completed) {
         this.completed = completed;
     }
 
@@ -114,5 +129,22 @@ public class Task {
 
     public void setParent(String parent) {
         this.parent = parent;
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", notes='" + notes + '\'' +
+                ", updated=" + updated +
+                ", created=" + created +
+                ", parent='" + parent + '\'' +
+                ", status=" + status +
+                ", deleted=" + deleted +
+                ", due='" + due + '\'' +
+                ", completed=" + completed +
+                ", hidden=" + hidden +
+                '}';
     }
 }

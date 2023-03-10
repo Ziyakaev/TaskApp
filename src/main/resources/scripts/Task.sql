@@ -10,7 +10,7 @@ CREATE TABLE tasks (
     status integer,
     deleted boolean,
     due varchar,
-    completed varchar,
+    completed boolean,
     hidden boolean
 );
 

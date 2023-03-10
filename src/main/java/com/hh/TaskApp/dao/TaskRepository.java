@@ -9,12 +9,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface TaskDao extends JpaRepository<Task, UUID> {
+public interface TaskRepository extends JpaRepository<Task, UUID> {
 
     @Transactional
     Task findTaskByIdAndDeletedIsFalse(UUID id);
-
     @Transactional
-    List<Task> findAllByDeletedIsFalse();
+    List<Task> findAllByDeletedIsFalseAndCompletedIsFalse();
 
 }
